@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FormFit: photo, signature and documents that portals actually accept</title>
+<meta name="description" content="Make your photo, signature and documents fit the exact pixel and KB rules of online application forms. Free, no sign-up, and your files never leave your device.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b5fa5">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>FormFit</h1>
+  <p class="tagline">Photo, signature and documents that the portal actually accepts.</p>
+  <p class="privacy">Your files <strong>never leave this device</strong>. No upload, no server, no sign-up.
+  The code is <a href="https://github.com/RahilSahu/formfit" target="_blank" rel="noopener">open source</a>, so you can verify that claim instead of trusting it.</p>
+</header>
+
+<main>
+  <div class="tabs" role="tablist">
+    <button id="tab-image" class="tab active" role="tab">Photo / Signature</button>
+    <button id="tab-pdf" class="tab" role="tab">Documents to PDF</button>
+  </div>
+
+  <section id="panel-image" class="panel">
+    <label class="drop" id="drop-image">
+      <input type="file" id="file-image" accept="image/*" hidden>
+      <span class="drop-title">Tap to choose a photo or signature</span>
+      <span class="drop-sub">JPG or PNG from your phone or computer</span>
+    </label>
+    <img id="preview-image" class="preview" alt="" hidden>
+
+    <label class="field">Form requirement
+      <select id="preset">
+        <option value="custom">Custom (type your own below)</option>
+      </select>
+    </label>
+    <div class="grid">
+      <label class="field">Width (px)<input type="number" id="in-w" min="0" placeholder="e.g. 200"></label>
+      <label class="field">Height (px)<input type="number" id="in-h" min="0" placeholder="e.g. 230"></label>
+      <label class="field">Min size (KB)<input type="number" id="in-min" min="0" value="0"></label>
+      <label class="field">Max size (KB)<input type="number" id="in-max" min="1" value="50"></label>
+    </div>
+    <p class="hint">Leave width and height empty to keep the original dimensions. The output is always a JPG sized <em>inside</em> your KB range, both the floor and the ceiling, because portals reject files that are too small too.</p>
+    <button id="go-image" class="primary" disabled>Make it portal-ready</button>
+
+    <div id="result-image" class="result" hidden>
+      <img id="out-preview" class="preview" alt="">
+      <ul class="checks" id="checks-image"></ul>
+      <a id="download-image" class="primary download" download="formfit.jpg">Download JPG</a>
+    </div>
+    <p id="error-image" class="error" role="alert"></p>
+  </section>
+
+  <section id="panel-pdf" class="panel" hidden>
+    <label class="drop" id="drop-pdf">
+      <input type="file" id="file-pdf" accept="image/*" multiple hidden>
+      <span class="drop-title">Tap to choose document photos</span>
+      <span class="drop-sub">Marksheet, certificate, ID: one photo per page</span>
+    </label>
+    <p id="pdf-count" class="hint"></p>
+    <div class="grid">
+      <label class="field">Max PDF size (KB)
+        <select id="in-pdf-max">
+          <option value="200">200 KB</option>
+          <option value="300" selected>300 KB</option>
+          <option value="500">500 KB</option>
+          <option value="1024">1 MB</option>
+        </select>
+      </label>
+    </div>
+    <button id="go-pdf" class="primary" disabled>Build my PDF</button>
+    <div id="result-pdf" class="result" hidden>
+      <ul class="checks" id="checks-pdf"></ul>
+      <a id="download-pdf" class="primary download" download="formfit-documents.pdf">Download PDF</a>
+    </div>
+    <p id="error-pdf" class="error" role="alert"></p>
+    <p class="hint">PDF mode loads a small library the first time you use it, so it needs internet once. Fitting itself still happens entirely on your device.</p>
+  </section>
+
+  <section class="why">
+    <h2>Why forms reject your upload</h2>
+    <ul>
+      <li><strong>Too heavy:</strong> a phone photo is 2 to 5 MB; the form may allow 50 KB. It rejects anything even 1 KB over.</li>
+      <li><strong>Too light:</strong> most forms set a minimum as well (for example, 20 to 50 KB). Over-compressed files are rejected as too small.</li>
+      <li><strong>Wrong shape:</strong> the notice fixes exact pixels (a bank exam photo is 200 x 230 px), not just size.</li>
+      <li><strong>Wrong format:</strong> PNG or iPhone HEIC where only JPG is accepted.</li>
+    </ul>
+    <p>FormFit fixes all four in one pass, on your own device. Cyber cafes charge for this and keep copies of your documents on shared computers; random compressor sites upload your Aadhaar and marksheets to unknown servers. Here, nothing is uploaded at all.</p>
+    <p class="hint">Presets reflect specs commonly published in recent exam notices. Notices change between cycles, so always check the numbers in your own notice and use Custom when they differ.</p>
+  </section>
+</main>
+
+<footer>
+  <p>FormFit is free and open source (MIT). Built for every applicant who has ever watched a form reject their photo at the last step.</p>
+</footer>
+
+<script type="module" src="app.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+</script>
+</body>
+</html>
